@@ -1,4 +1,4 @@
-module github.com/tkrajina/gpxgo
+module github.com/sammcewan/gpxgo
 
 go 1.16
 
