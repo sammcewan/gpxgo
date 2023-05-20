@@ -99,50 +99,50 @@ func TestNodesSubnodesAndAttrs(t *testing.T) {
 
 	var node ExtensionNode
 
-	assert.Equal(t, 0, len(node.Attrs))
+	assert.EqualValues(t, 0, len(node.Attrs))
 	node.SetAttr("xxx", "yyy")
-	assert.Equal(t, 1, len(node.Attrs))
+	assert.EqualValues(t, 1, len(node.Attrs))
 	{
 		val, found := node.GetAttr("xxx")
 		assert.True(t, found)
-		assert.Equal(t, "yyy", val)
+		assert.EqualValues(t, "yyy", val)
 	}
 
-	assert.Equal(t, 0, len(node.Nodes))
+	assert.EqualValues(t, 0, len(node.Nodes))
 	node.GetOrCreateNode("aaa").Data = "aaa data"
-	assert.Equal(t, 1, len(node.Nodes))
-	assert.Equal(t, 0, len(node.Nodes[0].Attrs))
+	assert.EqualValues(t, 1, len(node.Nodes))
+	assert.EqualValues(t, 0, len(node.Nodes[0].Attrs))
 
-	assert.Equal(t, &node.Nodes[0], node.GetOrCreateNode("aaa"))
+	assert.EqualValues(t, &node.Nodes[0], node.GetOrCreateNode("aaa"))
 
 	fmt.Println(string(node.debugXMLChunk()))
 	node.GetOrCreateNode("aaa").SetAttr("aaa", "bbb")
 	fmt.Println(string(node.debugXMLChunk()))
-	assert.Equal(t, 1, len(node.Nodes[0].Attrs))
-	assert.Equal(t, "aaa", node.Nodes[0].Attrs[0].Name.Local)
-	assert.Equal(t, "bbb", node.Nodes[0].Attrs[0].Value)
+	assert.EqualValues(t, 1, len(node.Nodes[0].Attrs))
+	assert.EqualValues(t, "aaa", node.Nodes[0].Attrs[0].Name.Local)
+	assert.EqualValues(t, "bbb", node.Nodes[0].Attrs[0].Value)
 
 	fmt.Println(string(node.debugXMLChunk()))
 	node.GetOrCreateNode("aaa", "bbb").SetAttr("aaa", "bbb")
 	fmt.Println(string(node.debugXMLChunk()))
-	assert.Equal(t, 1, len(node.Nodes))
-	assert.Equal(t, 1, len(node.Nodes[0].Nodes))
-	assert.Equal(t, "aaa", node.Nodes[0].Nodes[0].Attrs[0].Name.Local)
-	assert.Equal(t, "bbb", node.Nodes[0].Nodes[0].Attrs[0].Value)
+	assert.EqualValues(t, 1, len(node.Nodes))
+	assert.EqualValues(t, 1, len(node.Nodes[0].Nodes))
+	assert.EqualValues(t, "aaa", node.Nodes[0].Nodes[0].Attrs[0].Name.Local)
+	assert.EqualValues(t, "bbb", node.Nodes[0].Nodes[0].Attrs[0].Value)
 }
 
 func TestExtensionNodesAndAttrs(t *testing.T) {
 	t.Parallel()
 
 	var ext Extension
-	assert.Equal(t, 0, len(ext.Nodes))
+	assert.EqualValues(t, 0, len(ext.Nodes))
 	ext.GetOrCreateNode(NoNamespace, "aaa").Data = "aaa data"
-	assert.Equal(t, 1, len(ext.Nodes))
-	assert.Equal(t, 0, len(ext.Nodes[0].Attrs))
+	assert.EqualValues(t, 1, len(ext.Nodes))
+	assert.EqualValues(t, 0, len(ext.Nodes[0].Attrs))
 	ext.GetOrCreateNode(NoNamespace, "aaa").SetAttr("aaa", "bbb")
-	assert.Equal(t, 1, len(ext.Nodes[0].Attrs))
-	assert.Equal(t, "aaa", ext.Nodes[0].Attrs[0].Name.Local)
-	assert.Equal(t, "bbb", ext.Nodes[0].Attrs[0].Value)
+	assert.EqualValues(t, 1, len(ext.Nodes[0].Attrs))
+	assert.EqualValues(t, "aaa", ext.Nodes[0].Attrs[0].Name.Local)
+	assert.EqualValues(t, "bbb", ext.Nodes[0].Attrs[0].Value)
 
 	fmt.Println(string(ext.debugXMLChunk()))
 	ext.GetOrCreateNode(NoNamespace, "aaa", "bbb").SetAttr("aaa", "bbb")
@@ -154,7 +154,7 @@ func TestExtensionNodesAndAttrs(t *testing.T) {
 		fmt.Println("b", string(ext.debugXMLChunk()))
 		n2 := &ext.Nodes[0].Nodes[0]
 		fmt.Println("c", string(ext.debugXMLChunk()))
-		assert.Equal(t, fmt.Sprintf("%p", n1), fmt.Sprintf("%p", n2))
+		assert.EqualValues(t, fmt.Sprintf("%p", n1), fmt.Sprintf("%p", n2))
 	}
 
 	assert.Equal(t, 1, len(ext.Nodes))
@@ -375,7 +375,7 @@ func TestCreateExtensionWithNamespace(t *testing.T) {
 func TestGarminExtensions(t *testing.T) {
 	t.Parallel()
 
-	original, reparsed := loadAndReparseFile(t, "../test_files/gpx_with_garmin_extension.gpx")
+	original, reparsed := loadAndReparseFile(t, "./test_files/gpx_with_garmin_extension.gpx")
 	if t.Failed() {
 		t.FailNow()
 	}

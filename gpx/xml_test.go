@@ -17,7 +17,7 @@ import (
 func TestParseTime2(t *testing.T) {
 	tm, err := parseGPXTime("2021-06-19T17:28:22+00:00")
 	assert.Nil(t, err)
-	assert.Equal(t, "2021-06-19T17:28:22Z", tm.Format(time.RFC3339))
+	assert.EqualValues(t, "2021-06-19T17:28:22Z", tm.Format(time.RFC3339))
 }
 
 func TestParseTime(t *testing.T) {

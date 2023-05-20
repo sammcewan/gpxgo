@@ -8,6 +8,7 @@ package gpx
 import (
 	"encoding/xml"
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 )
@@ -26,6 +27,11 @@ func (n *NullableFloat64) Null() bool {
 // NotNull checks if value is not null
 func (n *NullableFloat64) NotNull() bool {
 	return n.notNull
+}
+
+// NotNull checks if value is not null
+func (n *NullableFloat64) IsNotNaN() bool {
+	return n.notNull && !math.IsNaN(n.data)
 }
 
 // Value returns the value

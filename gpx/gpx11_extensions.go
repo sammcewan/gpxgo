@@ -38,7 +38,7 @@ func (n ExtensionNode) toTokens(prefix string) (tokens []xml.Token) {
 	} else {
 		return nil
 	}
-	tokens = append(tokens, xml.EndElement{start.Name})
+	tokens = append(tokens, xml.EndElement{Name: start.Name})
 	return
 }
 

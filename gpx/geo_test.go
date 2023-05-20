@@ -40,5 +40,5 @@ func TestMaxSpeed(t *testing.T) {
 		{Speed: 6.0, Distance: 523.841129461},
 		{Speed: 1.0, Distance: 489.306355103},
 	})
-	assert.Equal(t, 6.0, maxSpeed)
+	assert.EqualValues(t, 6.0, maxSpeed)
 }

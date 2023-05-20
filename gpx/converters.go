@@ -40,10 +40,6 @@ func convertToGpx10Models(gpxDoc *GPX) *gpx10Gpx {
 	gpx10Doc.Author = gpxDoc.AuthorName
 	gpx10Doc.Email = gpxDoc.AuthorEmail
 
-	if len(gpxDoc.AuthorLink) > 0 || len(gpxDoc.AuthorLinkText) > 0 {
-		// TODO
-	}
-
 	if len(gpxDoc.Link) > 0 || len(gpxDoc.LinkText) > 0 {
 		gpx10Doc.Url = gpxDoc.Link
 		gpx10Doc.UrlName = gpxDoc.LinkText

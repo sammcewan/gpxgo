@@ -13,19 +13,19 @@ import (
 const oneDegree = 1000.0 * 10000.8 / 90.0
 const earthRadius = 6371 * 1000
 
-//ToRad converts to radial coordinates
+// ToRad converts to radial coordinates
 func ToRad(x float64) float64 {
 	return x / 180. * math.Pi
 }
 
-//Location implements an interface for all kinds of lat/long/elevation information
+// Location implements an interface for all kinds of lat/long/elevation information
 type Location interface {
 	GetLatitude() float64
 	GetLongitude() float64
 	GetElevation() NullableFloat64
 }
 
-//MovingData contains moving data
+// MovingData contains moving data
 type MovingData struct {
 	MovingTime      float64
 	StoppedTime     float64
@@ -34,7 +34,7 @@ type MovingData struct {
 	MaxSpeed        float64
 }
 
-//Equals compares to another MovingData struct
+// Equals compares to another MovingData struct
 func (md MovingData) Equals(md2 MovingData) bool {
 	return md.MovingTime == md2.MovingTime &&
 		md.MovingDistance == md2.MovingDistance &&
@@ -43,7 +43,7 @@ func (md MovingData) Equals(md2 MovingData) bool {
 		md.MaxSpeed == md.MaxSpeed
 }
 
-//SpeedsAndDistances contaings speed/distance information
+// SpeedsAndDistances contaings speed/distance information
 type SpeedsAndDistances struct {
 	Speed    float64
 	Distance float64
@@ -83,17 +83,17 @@ func length(locs []Point, threeD bool) float64 {
 	return res
 }
 
-//Length2D calculates the lenght of given points list disregarding elevation
+// Length2D calculates the lenght of given points list disregarding elevation
 func Length2D(locs []Point) float64 {
 	return length(locs, false)
 }
 
-//Length3D calculates the lenght of given points list including elevation distance
+// Length3D calculates the lenght of given points list including elevation distance
 func Length3D(locs []Point) float64 {
 	return length(locs, true)
 }
 
-//CalcMaxSpeed returns the maximum speed
+// CalcMaxSpeed returns the maximum speed
 func CalcMaxSpeed(speedsDistances []SpeedsAndDistances) float64 {
 	lenArrs := len(speedsDistances)
 
@@ -145,7 +145,7 @@ func CalcMaxSpeed(speedsDistances []SpeedsAndDistances) float64 {
 	return speedsSorted[maxIdx]
 }
 
-//CalcUphillDownhill calculates uphill and downhill from given elevations
+// CalcUphillDownhill calculates uphill and downhill from given elevations
 func CalcUphillDownhill(elevations []NullableFloat64) (float64, float64) {
 	elevsLen := len(elevations)
 	if elevsLen == 0 {
@@ -159,7 +159,7 @@ func CalcUphillDownhill(elevations []NullableFloat64) (float64, float64) {
 		if 0 < i && i < elevsLen-1 {
 			prevEle := elevations[i-1]
 			nextEle := elevations[i+1]
-			if prevEle.NotNull() && nextEle.NotNull() && elev.NotNull() {
+			if prevEle.IsNotNaN() && nextEle.IsNotNaN() && elev.IsNotNaN() {
 				currEle = *NewNullableFloat64(prevEle.Value()*0.3 + elev.Value()*0.4 + nextEle.Value()*0.3)
 			}
 		}
@@ -170,7 +170,7 @@ func CalcUphillDownhill(elevations []NullableFloat64) (float64, float64) {
 	var downhill float64
 
 	for i := 1; i < len(smoothElevations); i++ {
-		if smoothElevations[i].NotNull() && smoothElevations[i-1].NotNull() {
+		if smoothElevations[i].IsNotNaN() && smoothElevations[i-1].IsNotNaN() {
 			d := smoothElevations[i].Value() - smoothElevations[i-1].Value()
 			if d > 0.0 {
 				uphill += d
@@ -201,7 +201,7 @@ func distance(lat1, lon1 float64, ele1 NullableFloat64, lat2, lon2 float64, ele2
 	}
 
 	eleDiff := 0.0
-	if ele1.NotNull() && ele2.NotNull() {
+	if ele1.IsNotNaN() && ele2.IsNotNaN() {
 		eleDiff = ele1.Value() - ele2.Value()
 	}
 
@@ -221,12 +221,12 @@ func distance(lat1, lon1 float64, ele1 NullableFloat64, lat2, lon2 float64, ele2
 //	return distance(lat1, lon1, ele1, lat2, lon2, ele2, threeD, haversine)
 //}
 
-//Distance2D calculates the distance of 2 geo coordinates
+// Distance2D calculates the distance of 2 geo coordinates
 func Distance2D(lat1, lon1, lat2, lon2 float64, haversine bool) float64 {
 	return distance(lat1, lon1, *new(NullableFloat64), lat2, lon2, *new(NullableFloat64), false, haversine)
 }
 
-//Distance3D calculates the distance of 2 geo coordinates including elevation distance
+// Distance3D calculates the distance of 2 geo coordinates including elevation distance
 func Distance3D(lat1, lon1 float64, ele1 NullableFloat64, lat2, lon2 float64, ele2 NullableFloat64, haversine bool) float64 {
 	return distance(lat1, lon1, ele1, lat2, lon2, ele2, true, haversine)
 }
@@ -254,7 +254,7 @@ func AngleFromNorth(loc1, loc2 Point, radians bool) float64 {
 	return 180 * angle / math.Pi
 }
 
-//ElevationAngle calculates the elevation angle (steepness) between to points
+// ElevationAngle calculates the elevation angle (steepness) between to points
 func ElevationAngle(loc1, loc2 Point, radians bool) float64 {
 	if loc1.Elevation.Null() || loc2.Elevation.Null() {
 		return 0.0
@@ -383,7 +383,7 @@ func smoothVertical(originalPoints []GPXPoint) []GPXPoint {
 		if 1 <= pointNo && pointNo <= len(originalPoints)-2 {
 			previousPointElevation := originalPoints[pointNo-1].Elevation
 			nextPointElevation := originalPoints[pointNo+1].Elevation
-			if previousPointElevation.NotNull() && point.Elevation.NotNull() && nextPointElevation.NotNull() {
+			if previousPointElevation.IsNotNaN() && point.Elevation.IsNotNaN() && nextPointElevation.IsNotNaN() {
 				result[pointNo].Elevation = *NewNullableFloat64(previousPointElevation.Value()*0.4 + point.Elevation.Value()*0.2 + nextPointElevation.Value()*0.4)
 				//log.Println("->%f", seg.Points[pointNo].Elevation.Value())
 			}
