@@ -877,7 +877,8 @@ type GPXTrackSegment struct {
 
 func (g *GPXTrackSegment) UpdateDistance(startingDistance float64) float64 {
 	d := startingDistance
-	for pointNo, point := range g.Points {
+	for pointNo := range g.Points {
+		point := &g.Points[pointNo]
 		if pointNo == 0 {
 			point.Distance = d
 		} else if pointNo > 0 {
