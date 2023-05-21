@@ -481,7 +481,7 @@ func (g *GPX) ExecuteOnTrackPoints(executor func(*GPXPoint)) {
 func (g *GPX) AddElevation(elevation float64) {
 	g.ExecuteOnAllPoints(func(point *GPXPoint) {
 		fmt.Println("setting elevation if NotNull for:", point.Elevation)
-		if point.Elevation.NotNull() {
+		if point.Elevation.IsNotNaN() {
 			fmt.Println("setting elevation")
 			point.Elevation.SetValue(point.Elevation.Value() + elevation)
 		}
@@ -667,7 +667,7 @@ func (pt Point) Add(latDelta, lonDelta, eleDelta float64) Point {
 		Latitude:  pt.Latitude + latDelta,
 		Longitude: pt.Longitude + lonDelta,
 	}
-	if res.Elevation.NotNull() {
+	if res.Elevation.IsNotNaN() {
 		res.Elevation.data += eleDelta
 	}
 	return res
@@ -956,7 +956,7 @@ func (seg *GPXTrackSegment) Bounds() GpxBounds {
 func (seg *GPXTrackSegment) ElevationBounds() ElevationBounds {
 	minmax := getMaximalElevationBounds()
 	for _, pt := range seg.Points {
-		if pt.Elevation.NotNull() {
+		if pt.Elevation.IsNotNaN() {
 			minmax.MaxElevation = math.Max(pt.Elevation.Value(), minmax.MaxElevation)
 			minmax.MinElevation = math.Min(pt.Elevation.Value(), minmax.MinElevation)
 		}
@@ -1112,7 +1112,7 @@ func (seg *GPXTrackSegment) SimplifyTracks(maxDistance float64) {
 // AddElevation adds elevation on segment points (pointElevation = pointElevation + elevation)
 func (seg *GPXTrackSegment) AddElevation(elevation float64) {
 	for _, point := range seg.Points {
-		if point.Elevation.NotNull() {
+		if point.Elevation.IsNotNaN() {
 			point.Elevation.SetValue(point.Elevation.Value() + elevation)
 		}
 	}
@@ -1255,7 +1255,7 @@ func (seg *GPXTrackSegment) RemoveVerticalExtremes() {
 	elevationDeltaSum := 0.0
 	elevationDeltaNo := 0
 	for pointNo, point := range seg.Points {
-		if pointNo > 0 && point.Elevation.NotNull() && seg.Points[pointNo-1].Elevation.NotNull() {
+		if pointNo > 0 && point.Elevation.IsNotNaN() && seg.Points[pointNo-1].Elevation.IsNotNaN() {
 			elevationDeltaSum += math.Abs(point.Elevation.Value() - seg.Points[pointNo-1].Elevation.Value())
 			elevationDeltaNo += 1
 		}
@@ -1269,7 +1269,7 @@ func (seg *GPXTrackSegment) RemoveVerticalExtremes() {
 	newPoints := make([]GPXPoint, 0)
 	for pointNo, point := range originalPoints {
 		smoothedPoint := smoothedPoints[pointNo]
-		if 0 < pointNo && pointNo < len(originalPoints)-1 && point.Elevation.NotNull() && smoothedPoints[pointNo].Elevation.NotNull() {
+		if 0 < pointNo && pointNo < len(originalPoints)-1 && point.Elevation.IsNotNaN() && smoothedPoints[pointNo].Elevation.IsNotNaN() {
 			d := originalPoints[pointNo-1].Distance3D(&originalPoints[pointNo+1])
 			d1 := originalPoints[pointNo].Distance3D(&originalPoints[pointNo-1])
 			d2 := originalPoints[pointNo].Distance3D(&originalPoints[pointNo+1])

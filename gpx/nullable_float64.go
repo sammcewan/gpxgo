@@ -34,6 +34,10 @@ func (n *NullableFloat64) IsNaN() bool {
 	return n.notNull && !math.IsNaN(n.data)
 }
 
+func (n *NullableFloat64) IsNotNaN() bool {
+	return !n.IsNaN()
+}
+
 // Value returns the value
 func (n *NullableFloat64) Value() float64 {
 	return n.data
