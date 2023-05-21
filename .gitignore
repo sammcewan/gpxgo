@@ -4,3 +4,4 @@ gpxgo
 pkg/*
 .vscode/*
 vendor/*
+/.DS_Store

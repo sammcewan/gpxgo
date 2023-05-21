@@ -159,7 +159,7 @@ func CalcUphillDownhill(elevations []NullableFloat64) (float64, float64) {
 		if 0 < i && i < elevsLen-1 {
 			prevEle := elevations[i-1]
 			nextEle := elevations[i+1]
-			if prevEle.NotNull() && nextEle.NotNull() && elev.NotNull() {
+			if prevEle.IsNotNaN() && nextEle.IsNotNaN() && elev.IsNotNaN() {
 				currEle = *NewNullableFloat64(prevEle.Value()*0.3 + elev.Value()*0.4 + nextEle.Value()*0.3)
 			}
 		}
@@ -170,7 +170,7 @@ func CalcUphillDownhill(elevations []NullableFloat64) (float64, float64) {
 	var downhill float64
 
 	for i := 1; i < len(smoothElevations); i++ {
-		if smoothElevations[i].NotNull() && smoothElevations[i-1].NotNull() {
+		if smoothElevations[i].IsNotNaN() && smoothElevations[i-1].IsNotNaN() {
 			d := smoothElevations[i].Value() - smoothElevations[i-1].Value()
 			if d > 0.0 {
 				uphill += d
@@ -201,7 +201,7 @@ func distance(lat1, lon1 float64, ele1 NullableFloat64, lat2, lon2 float64, ele2
 	}
 
 	eleDiff := 0.0
-	if ele1.IsNaN() && ele2.IsNaN() {
+	if ele1.IsNotNaN() && ele2.IsNotNaN() {
 		eleDiff = ele1.Value() - ele2.Value()
 	}
 
@@ -383,7 +383,7 @@ func smoothVertical(originalPoints []GPXPoint) []GPXPoint {
 		if 1 <= pointNo && pointNo <= len(originalPoints)-2 {
 			previousPointElevation := originalPoints[pointNo-1].Elevation
 			nextPointElevation := originalPoints[pointNo+1].Elevation
-			if previousPointElevation.NotNull() && point.Elevation.NotNull() && nextPointElevation.NotNull() {
+			if previousPointElevation.IsNotNaN() && point.Elevation.IsNotNaN() && nextPointElevation.IsNotNaN() {
 				result[pointNo].Elevation = *NewNullableFloat64(previousPointElevation.Value()*0.4 + point.Elevation.Value()*0.2 + nextPointElevation.Value()*0.4)
 				//log.Println("->%f", seg.Points[pointNo].Elevation.Value())
 			}

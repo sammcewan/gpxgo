@@ -30,12 +30,8 @@ func (n *NullableFloat64) NotNull() bool {
 }
 
 // NotNull checks if value is not null
-func (n *NullableFloat64) IsNaN() bool {
-	return n.notNull && !math.IsNaN(n.data)
-}
-
 func (n *NullableFloat64) IsNotNaN() bool {
-	return !n.IsNaN()
+	return n.notNull && !math.IsNaN(n.data)
 }
 
 // Value returns the value
