@@ -141,10 +141,10 @@ func loadAndReparseFile(t *testing.T, fn string) (*GPX, *GPX) {
 }
 
 func TestDistance(t *testing.T) {
-	g, _ := ParseFile("../test_files/file.gpx")
+	g, _ := ParseFile("../test_files/gpx.gpx")
 	g.UpdateDistance()
 	assert.Equal(t, 0.0, g.Tracks[0].Segments[0].Points[0].Distance)
-	assert.Equal(t, 61.76815317436073, g.Tracks[len(g.Tracks)-1].Segments[len(g.Tracks[len(g.Tracks)-1].Segments)-1].Points[len(g.Tracks[len(g.Tracks)-1].Segments[len(g.Tracks[len(g.Tracks)-1].Segments)-1].Points)-1].Distance)
+	assert.Equal(t, 30161.174834301004, g.Tracks[len(g.Tracks)-1].Segments[len(g.Tracks[len(g.Tracks)-1].Segments)-1].Points[len(g.Tracks[len(g.Tracks)-1].Segments[len(g.Tracks[len(g.Tracks)-1].Segments)-1].Points)-1].Distance)
 }
 
 func TestParseGPXTimes(t *testing.T) {
