@@ -375,7 +375,7 @@ func TestCreateExtensionWithNamespace(t *testing.T) {
 func TestGarminExtensions(t *testing.T) {
 	t.Parallel()
 
-	original, reparsed := loadAndReparseFile(t, "./test_files/gpx_with_garmin_extension.gpx")
+	original, reparsed := loadAndReparseFile(t, "../test_files/gpx_with_garmin_extension.gpx")
 	if t.Failed() {
 		t.FailNow()
 	}
